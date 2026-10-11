@@ -18,3 +18,13 @@ Http protocol:
 > Host: localhost
 > User-Agent: curl/8.5.0
 > Accept: */*
+
+
+TO FIGURE OUT:
+???blocking/non-blocking syscalls
+???asynchronous programming 
+???run a script on my server
+???config NGINX
+
+TODO
+ultra mega basic event loop webserv
