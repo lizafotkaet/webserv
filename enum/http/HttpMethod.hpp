@@ -1,4 +1,5 @@
-enum HttpMethod {
+#pragma once
+enum class HttpMethod {
 	INVALID,
 	GET,
 	POST,

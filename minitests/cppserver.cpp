@@ -4,6 +4,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <sys/epoll.h>
+#include <map>
+#include "HttpParser.hpp"
 
 int main()
 {
@@ -33,6 +35,7 @@ int main()
 	int max_event_count = 100;
 	int timeout = -1;
 	struct epoll_event events[max_event_count];
+	std::map<int, HttpParser> parsers;
 
 	while (1) {
 		int eventCount = epoll_wait(epoll_fd, events, max_event_count, timeout);
@@ -52,6 +55,10 @@ int main()
 				// epoll_ctl is the control function which we can use to modify our epoll setup
 				// EPOLL_CTL_ADD is one of the actions, and it lets us add a new socket to the setup
 				epoll_ctl(epoll_fd, EPOLL_CTL_ADD, clientSocket, &event);
+				// Only add a new parser if the map doesn't already have one for this file descriptor
+				// TODO: add some error handling for if this is not the case, at least a message or so
+				if (!parsers.contains(clientSocket))
+					parsers.insert(std::make_pair(clientSocket, HttpParser()));
 				// For testing purposes, we are printing out a message to show the file descriptor of the newly connected client
 				std::cout << "Client with FD " << clientSocket << " connected!\n";
 			}
@@ -71,6 +78,10 @@ int main()
 				if (readBytes > 0) {
 					// For testing purposes, print out the (partial) message we received
 					std::cout << "Client with FD " << clientFd << " sent:\n" << buffer << "\n";
+					// Add the received data to the request string in the parser for this client, but only if 
+					if (parsers.contains(clientFd)) {
+						parsers[clientFd].AppendBytes(buffer);
+					}
 				}
 				// TODO: One of our next goals is to now store these (partial) messages and have something parse them
 				// Right now we just print it and forget it existed, which is not ideal
@@ -80,11 +91,12 @@ int main()
 				// so here we send our response after we built one using send() (it's a HTTP response)
 				// TODO: Maybe first respond with a simple test message to see if it works
 				// TODO: but ideally we want to check if a HTTP response is ready for this socket, and if so, retreive that and send it
+
 			}
 		}
 	}
-    // closing the socket.
-    close(serverSocket);
+	// closing the socket.
+	close(serverSocket);
 
-    return 0;
+	return 0;
 }

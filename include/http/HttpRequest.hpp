@@ -1,11 +1,13 @@
 #pragma once
-#include <vector>
-#include <utility>
+#include <map>
 #include <string>
-#include "HttpMethod.hpp"
+#include "http/HttpMethod.hpp"
 
 class HttpRequest {
 	public:
 	HttpMethod Method;
-	std::vector<std::pair<std::string, std::string>> Headers;
-}
+	std::string Path;
+	std::string HttpVersion;
+	std::map<std::string, std::string> Headers;
+	std::string Body;
+};
