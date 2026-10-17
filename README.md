@@ -27,7 +27,10 @@ TO FIGURE OUT:
 ???config NGINX
 
 TODO
-ultra mega basic event loop webserv
+FORKING FOR CGI WHERE HOW
 
-## Mika's Ramblings
+inline fc's figure out
 
+start Makefile!!
+
+c++  -Iinclude -Ienum main.cpp src/http/*.cpp -o webserv -std=c++20
