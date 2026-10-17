@@ -28,3 +28,6 @@ TO FIGURE OUT:
 
 TODO
 ultra mega basic event loop webserv
+
+## Mika's Ramblings
+
