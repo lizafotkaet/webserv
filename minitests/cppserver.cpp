@@ -100,3 +100,21 @@ int main()
 
 	return 0;
 }
+
+/*
+EPOLLIN on client fd
+  → recv, append to parser
+  → parser says "request complete" and it's a CGI route
+  → pipe + fork + execve, fcntl O_NONBLOCK on parent ends
+  → add the pipe fds to epoll (stdout pipe: EPOLLIN, stdin pipe: EPOLLOUT if there's a body)
+  → client fd: stop caring about it for now (nothing to send yet)
+
+EPOLLOUT on CGI stdin pipe  → write one chunk of body; when all sent, close + EPOLL_CTL_DEL
+EPOLLIN/EPOLLHUP on CGI stdout pipe → read one chunk into the CGI buffer
+  → read() == 0: close + EPOLL_CTL_DEL, waitpid(WNOHANG), build HTTP response from the output,
+                 EPOLL_CTL_MOD client fd to EPOLLOUT
+
+EPOLLOUT on client fd → send() the response (same as for a static file)
+
+
+*/

@@ -69,3 +69,8 @@ Testing/
 .cache/
 
 webserv
+server
+client
+c1
+c2
+tester
