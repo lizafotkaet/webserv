@@ -1,8 +1,0 @@
-GET /index.html HTTP/1.0
-Host: localhost:9898
-User-Agent: TestClient/1.0
-Accept: text/html
-Connection: close
-Content-Length: 3
-
-abc
