@@ -31,9 +31,11 @@ TO FIGURE OUT:
 ???asynchronous programming 
 ???run a script on my server
 ???config NGINX
+???UNIQUE POINTERS!!!
+
 
 TODO
-FORKING FOR CGI WHERE HOW
+
 
 inline fc's figure out
 

@@ -6,25 +6,31 @@
 #include <sys/epoll.h>
 #include <vector>
 #include <array>
+#include <netdb.h>
 
 using namespace std;
 
 int main()
 {
     // creating socket
-    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
     // specifying the address
-    sockaddr_in serverAddress;
-    serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(6969);
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
+	addrinfo	hints{};
+	addrinfo*	res{nullptr};
+    // sockaddr_in serverAddress;
+	hints.ai_family   = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags    = AI_PASSIVE;
+
+	std::string host{"127.0.0.1"}, port{"6969"};
+	getaddrinfo(host.c_str(), port.c_str(), &hints, &res);
+
+	int serverSocket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 
     // binding socket.
-    bind(serverSocket, (struct sockaddr*)&serverAddress,
-         sizeof(serverAddress));
+    bind(serverSocket, res->ai_addr, res->ai_addrlen);
 
-	cout << "Socket bound...\n\n";
+	cout << "Socket bound yaaaaay...\n\n";
 
     // listening to the assigned socket
     listen(serverSocket, 5);
@@ -71,6 +77,7 @@ int main()
 		// close(clientSocket);
 	}
 
+	freeaddrinfo(res); // do we need this tho????
     // closing the socket.
     close(serverSocket);
 
