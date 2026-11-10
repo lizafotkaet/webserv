@@ -20,7 +20,7 @@ int main()
             sizeof(serverAddress));
 
     // sending data
-    const char* message = "Hello, server! I'm another server";
+    const char* message = "Hello, server! I'm another client";
     send(clientSocket, message, strlen(message), 0);
 	char buffer[1024] = {0};
 	recv(clientSocket, buffer, sizeof(buffer), 0);

@@ -4,8 +4,10 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <sys/epoll.h>
+#include <fcntl.h>
 #include <vector>
 #include <array>
+
 
 using namespace std;
 
@@ -13,6 +15,7 @@ int main()
 {
     // creating socket
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+	fcntl(serverSocket, F_SETFL, O_NONBLOCK);
 
     // specifying the address
     sockaddr_in serverAddress;
@@ -50,6 +53,7 @@ int main()
 
 			if (fd == serverSocket){
 				int clientSocket = accept(serverSocket, nullptr, nullptr);
+				fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 				struct epoll_event event;
 				event.events = EPOLLIN;
 				event.data.fd = clientSocket;
