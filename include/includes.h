@@ -1,3 +1,5 @@
+#pragma once
+
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
@@ -19,4 +21,11 @@
 #include "../enum/http/HttpMethod.hpp"
 #include "../enum/http/HttpParserResultState.hpp"
 #include "../enum/http/HttpParserState.hpp"
+#include "config/ListenAddress.hpp"
+#include "config/LocationConfig.hpp"
+#include "config/ServerConfig.hpp"
+#include "config/WebservConfig.hpp"
+#include "server/Client.h"
+#include "server/Server.h"
+#include "server/constants.h"
 

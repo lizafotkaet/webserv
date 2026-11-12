@@ -35,12 +35,10 @@ void	event_loop(){
 
 	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, serverSocket, &event);
 
-	const int maxevents = 1024;
-	const int timeout = -1;
-	struct epoll_event events[maxevents];
+	struct epoll_event events[MAX_EVENTS];
     // accepting connection request
 	while (1){
-		int num = epoll_wait(epoll_fd, events, maxevents, timeout);
+		int num = epoll_wait(epoll_fd, events, MAX_EVENTS, EPOLL_TIMEOUT);
 		for (int i{}; i < num; i++){
 			int fd = events[i].data.fd;
 
