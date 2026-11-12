@@ -74,3 +74,7 @@ client
 c1
 c2
 tester
+# the names above are meant for binaries only — don't ignore source directories with those names
+!**/server/
+!**/client/
+!**/webserv
