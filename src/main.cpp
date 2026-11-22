@@ -4,14 +4,36 @@
 #include <vector>
 
 void HttpParseTesting(std::vector<std::string> args) {
-	HttpParser parser = HttpParser();
-	//parser.AppendBytes("GET /testing HTTP/1.0\r\nHost:   mika.com\r\nContent-Length:3\r\nContent-Fakeheader: lmao\r\nContent-Fakeheader: xdxd\r\n\r\nabc");
-	parser.AppendBytes("GET /testing HTTP/1.0\r\nHost:   mika.com\r\nTransfer-Encoding:chunked\r\nContent-Fakeheader: lmao\r\nContent-Fakeheader: xdxd\r\n\r\n3\r\nabc\r\n4\r\nlmao\r\n0\r\n\r\n");
-	if (parser.resultState == HttpParserResultState::VALID) {
-		std::cout << "--Start\tChunked\tBody--\r\n" << parser.result.Body << "\r\n--End\tChunked\tBody--\r\n";
+	{
+		HttpParser parser = HttpParser();
+		parser.AppendBytes("GET /testing HTTP/1.0\r\nHost:   mika.com\r\nContent-Length:4\r\nContent-Fakeheader: lmao\r\nContent-Fakeheader: xdxd\r\n\r\nabc");
+		parser.AppendBytes("d");
+		if (parser.resultState == HttpParserResultState::VALID) {
+			std::cout << "--Start\tBody--\r\n" << parser.result.Body << "\r\n--End\tBody--\r\n";
+		}
+		else if (parser.resultState == HttpParserResultState::INVALID) {
+			std::cout << "Invalid request\r\n";
+		}
 	}
-	else if (parser.resultState == HttpParserResultState::INVALID) {
-		std::cout << "Invalid request\r\n";
+	{
+		HttpParser parser = HttpParser();
+		parser.AppendBytes("GET /testing HTTP/1.0\r\nHost:   mika.com\r\nTransfer-Encoding:chunked\r\nContent-Fakeheader: lmao\r\nContent-Fakeheader: xdxd\r\n\r\n3\r\nabc\r\n4\r\nlmao\r\n0\r\n\r\n");
+		if (parser.resultState == HttpParserResultState::VALID) {
+			std::cout << "--Start\tBody--\r\n" << parser.result.Body << "\r\n--End\tBody--\r\n";
+		}
+		else if (parser.resultState == HttpParserResultState::INVALID) {
+			std::cout << "Invalid request\r\n";
+		}
+	}
+	{
+		HttpParser parser = HttpParser();
+		parser.AppendBytes("GET /testing HTTP/1.0\r\nHost:   mika.com\r\nContent-Fakeheader: lmao\r\nContent-Fakeheader: xdxd\r\n\r\n");
+		if (parser.resultState == HttpParserResultState::VALID) {
+			std::cout << "--Start\tBody--\r\n" << parser.result.Body << "\r\n--End\tBody--\r\n";
+		}
+		else if (parser.resultState == HttpParserResultState::INVALID) {
+			std::cout << "Invalid request\r\n";
+		}
 	}
 }
 

@@ -25,7 +25,7 @@ void HttpParser::tryContinueParsing() { //TODO: implement the rest of parsing
 		case HttpParserState::PATH: this->parsePath(); break;
 		case HttpParserState::HTTPVERSION: this->parseHttpVersion(); break;
 		case HttpParserState::HEADERS: this->parseHeader(); break;
-		// case PARSE_STATE_BODY: this->parseBody(); break;
+		case HttpParserState::BODY: this->parseBody(); break;
 		default: return;
 	}
 }
@@ -185,7 +185,7 @@ void HttpParser::setBodyType() {
 	auto teIter = this->result.Headers.find("transfer-encoding");
 	auto clIter = this->result.Headers.find("content-length");
 	// Invalid if both Content-Length and Transfer-Encoding are present
-	if (teIter == this->result.Headers.end() && clIter == this->result.Headers.end()) {
+	if (teIter != this->result.Headers.end() && clIter != this->result.Headers.end()) {
 			this->resultState = HttpParserResultState::INVALID;
 			return;
 	}
@@ -269,7 +269,11 @@ void HttpParser::parseChunkedBody() {
 }
 
 void HttpParser::parseNormalBody() {
-	// TODO: Implement
+	// Leave buffer untouched until the whole body is in there
+	if (this->buffer.length() < this->contentLength) return;
+	this->result.Body = this->buffer.substr(0, this->contentLength);
+	this->resultState = HttpParserResultState::VALID;
+	return;
 }
 
 void HttpParser::parseBody() {
@@ -280,9 +284,7 @@ void HttpParser::parseBody() {
 	else if (this->bodyType == HttpParserBodyType::NORMAL)
 		parseNormalBody();
 	else if (this->bodyType == HttpParserBodyType::EMPTY) {
-		// Empty body means there should be nothing left in buffer, if there is, it's invalid
-		if (this->buffer.length() == 0) this->resultState = HttpParserResultState::VALID;
-		else this->resultState = HttpParserResultState::INVALID;
+		this->resultState = HttpParserResultState::VALID;
 	}
 }
 
