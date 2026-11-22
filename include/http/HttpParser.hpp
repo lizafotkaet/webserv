@@ -2,6 +2,7 @@
 #include <string>
 #include "http/HttpParserState.hpp"
 #include "http/HttpParserResultState.hpp"
+#include "http/HttpParserBodyType.hpp"
 #include "HttpRequest.hpp"
 
 class HttpParser {
@@ -18,10 +19,27 @@ class HttpParser {
 	// Used by the core loop to add received bytes onto the request string
 	HttpParser();
 	void AppendBytes(char bytes[]);
-	static bool IsValidHttpPathChar(char c);
 	private:
+	static bool isValidHttpPathChar(char c);
+	static bool isTchar(unsigned char c);
+	static bool isFieldValueChar(unsigned char c);
+	static bool isValidHeaderName(std::string s);
+	static bool isValidHeaderValue(std::string s);
+	static bool isUnrepeatableHeader(std::string headerName);
+	static bool isRecognizedHeader(std::string headerName);
 	inline static const std::string HTTP_PATH_SPECIAL_CHARS = "-_.~/!$&'()*+,;=:@%?";
+	inline static const std::size_t HTTP_HEADER_NAME_MAXLEN = 255;
+	inline static const std::size_t HTTP_HEADER_VALUE_MAXLEN = 1024;
+	HttpParserBodyType bodyType;
+	bool contentLengthSet;
+	std::size_t contentLength;
 	void tryContinueParsing();
 	void parseMethod();
 	void parsePath();
+	void parseHttpVersion();
+	void parseHeader();
+	void parseChunkedBody();
+	void parseNormalBody();
+	void parseBody();
+	void setBodyType();
 };

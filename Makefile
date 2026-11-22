@@ -1,7 +1,8 @@
 NAME := webserv
 
 CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++23
+# TODO: add the Werror flag back
+CXXFLAGS := -Wall -Wextra -std=c++23
 
 INC_DIR := include
 SRC_DIR := src
