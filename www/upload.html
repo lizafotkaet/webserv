@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>webserv — Upload</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header><nav>
+<a class="brand" href="/">webserv</a>
+<a href="/upload.html">Upload</a>
+<a href="/delete.html">Delete</a>
+<a href="/cgi.html">CGI</a>
+<a href="/errors.html">Errors</a>
+</nav></header>
+<main>
+<h1>Upload</h1>
+<div class="card">
+<h2>File upload (multipart/form-data)</h2>
+<form action="/uploads/" method="post" enctype="multipart/form-data">
+<p><input type="file" name="file" required></p>
+<input type="submit" value="Upload">
+</form>
+<p class="muted">Sends a POST to <code>/uploads/</code>. Try a file bigger than <code>client_max_body_size</code> to get 413.</p>
+</div>
+<div class="card">
+<h2>Form data (application/x-www-form-urlencoded)</h2>
+<form action="/uploads/" method="post">
+<p><input type="text" name="name" placeholder="name"></p>
+<p><textarea name="message" rows="3" placeholder="message"></textarea></p>
+<input type="submit" value="Send">
+</form>
+</div>
+<p><a href="/uploads/">Browse /uploads/</a> (needs autoindex on)</p>
+</main>
+<footer>webserv — HTTP/1.0</footer>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>webserv — CGI</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header><nav>
+<a class="brand" href="/">webserv</a>
+<a href="/upload.html">Upload</a>
+<a href="/delete.html">Delete</a>
+<a href="/cgi.html">CGI</a>
+<a href="/errors.html">Errors</a>
+</nav></header>
+<main>
+<h1>CGI</h1>
+<div class="card">
+<h2>GET with a query string</h2>
+<form action="/cgi-bin/hello.py" method="get">
+<p><input type="text" name="name" placeholder="your name"></p>
+<input type="submit" value="Run (GET)">
+</form>
+</div>
+<div class="card">
+<h2>POST with a body</h2>
+<form action="/cgi-bin/hello.py" method="post">
+<p><textarea name="message" rows="3" placeholder="message"></textarea></p>
+<input type="submit" value="Run (POST)">
+</form>
+</div>
+<div class="card">
+<h2>Edge cases</h2>
+<ul class="links">
+<li><a href="/cgi-bin/hello.py?name=42&amp;campus=amsterdam">Multiple query parameters</a></li>
+<li><a href="/cgi-bin/loop.py">Infinite loop</a> (should end in 504, not hang the server)</li>
+<li><a href="/cgi-bin/missing.py">Missing script</a> (should be 404)</li>
+</ul>
+</div>
+</main>
+<footer>webserv — HTTP/1.0</footer>
+</body>
+</html>

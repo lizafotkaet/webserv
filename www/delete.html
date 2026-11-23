@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>webserv — Delete</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header><nav>
+<a class="brand" href="/">webserv</a>
+<a href="/upload.html">Upload</a>
+<a href="/delete.html">Delete</a>
+<a href="/cgi.html">CGI</a>
+<a href="/errors.html">Errors</a>
+</nav></header>
+<main>
+<h1>Delete</h1>
+<div class="card">
+<h2>DELETE a file</h2>
+<p class="muted">HTML forms can only send GET and POST, so this page uses <code>fetch()</code>. You can also use <code>curl -X DELETE http://localhost:8080/uploads/name</code>.</p>
+<p><input type="text" id="path" value="/uploads/"></p>
+<button id="go">Send DELETE</button>
+<pre id="out">Response will appear here.</pre>
+</div>
+<script>
+document.getElementById('go').onclick = async () => {
+	const out = document.getElementById('out');
+	const path = document.getElementById('path').value;
+	try {
+		const r = await fetch(path, { method: 'DELETE' });
+		out.textContent = r.status + ' ' + r.statusText + '\n\n' + await r.text();
+	} catch (e) {
+		out.textContent = 'Request failed: ' + e;
+	}
+};
+</script>
+</main>
+<footer>webserv — HTTP/1.0</footer>
+</body>
+</html>

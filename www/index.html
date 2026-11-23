@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>webserv — Home</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header><nav>
+<a class="brand" href="/">webserv</a>
+<a href="/upload.html">Upload</a>
+<a href="/delete.html">Delete</a>
+<a href="/cgi.html">CGI</a>
+<a href="/errors.html">Errors</a>
+</nav></header>
+<main>
+<h1>It works!</h1>
+<p>If you can read this, your server is serving static files. Use the pages below to test each feature.</p>
+<div class="grid">
+<div class="card"><h2>GET</h2><p>Static files, MIME types and directory listing.</p>
+<ul class="links">
+<li><a href="/files/">/files/</a> (autoindex)</li>
+<li><a href="/files/hello.txt">hello.txt</a> (text/plain)</li>
+<li><a href="/files/docs/">/files/docs/</a> (nested folder)</li>
+</ul></div>
+<div class="card"><h2>POST</h2><p>Upload a file or send form data.</p><a class="btn" href="/upload.html">Upload test</a></div>
+<div class="card"><h2>DELETE</h2><p>Remove a file from the upload folder.</p><a class="btn" href="/delete.html">Delete test</a></div>
+<div class="card"><h2>CGI</h2><p>Run a script with GET and POST.</p><a class="btn" href="/cgi.html">CGI test</a></div>
+<div class="card"><h2>Redirect</h2><p>Needs a <code>return 301 /;</code> rule on <code>/redirect</code> in your config.</p><a class="btn ghost" href="/redirect">/redirect</a></div>
+<div class="card"><h2>Errors</h2><p>Trigger error codes and check your error pages.</p><a class="btn ghost" href="/errors.html">Error tests</a></div>
+</div>
+</main>
+<footer>webserv — HTTP/1.0</footer>
+</body>
+</html>
