@@ -73,3 +73,6 @@ Use it: when handling a request, find the matching location, then build path = r
 Security: reject URIs containing .. (for example GET /../../etc/passwd). Otherwise people can read files outside www. Evaluators often test this.
 
 !!! ------------------------ <\ON CONFIG:> ----------------------
+
+
+1. setting up the connection based on config

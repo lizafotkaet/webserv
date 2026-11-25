@@ -5,6 +5,8 @@
 #include <sys/epoll.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <netdb.h>
+
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -14,6 +16,7 @@
 #include <map>
 #include <vector>
 #include <array>
+#include <cstring>
 
 
 #include "http/HttpParser.hpp"
@@ -28,4 +31,5 @@
 #include "server/Client.h"
 #include "server/Server.h"
 #include "server/constants.h"
+#include <csignal>
 

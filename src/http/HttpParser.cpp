@@ -58,7 +58,7 @@ void HttpParser::parsePath() {
 	HttpParserResultState pathState = HttpParserResultState::UNFINISHED;
 	// Loop through all the characters in the buffer string
 	// TODO: We need a configurable maximum path length so we don't potentially read forever
-	for (int i = 0; i < this->buffer.size(); i++) {
+	for (int i = 0; i < this->static_cast<int>(buffer.size()); i++) {
 		// If we run into a space, we potentially have the end of the path
 		if (this->buffer[i] == ' ') {
 			// .. but if the first character is a space, that's not a valid path, so we check for that first
