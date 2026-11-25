@@ -97,6 +97,8 @@ void HttpParser::parsePath() {
 }
 
 void HttpParser::parseHttpVersion() {
+	// If the buffer isn't long enough to hold the full HTTP version yet, exit
+	if (this->buffer.length() < 10) return;
 	if (this->buffer.starts_with("HTTP/1.0\r\n") || this->buffer.starts_with("HTTP/1.1\r\n")) {
 		this->result.HttpVersion = "1.0"; // TODO: Possibly just.... either make this an int or get rid of it completely since it's the only thing we support
 		this->state = HttpParserState::HEADERS;
@@ -109,7 +111,7 @@ void HttpParser::parseHttpVersion() {
 void HttpParser::parseHeader() { //TODO: Check if maybe we just make the parse result state the return type of these parse functions instead
 	// Check if we know there's at least a full line in the buffer
 	// TODO: Also investigate std::string_view as it may be a more efficient way to do what we do in most parsing
-	std::size_t headerEndLoc = this->buffer.find_first_of("\r\n");
+	std::size_t headerEndLoc = this->buffer.find("\r\n");
 	if (headerEndLoc != std::string::npos) {
 		if (headerEndLoc == 0) { //TODO: replace with find_first_of \r\n\r\n and compare to headerend
 			this->state = HttpParserState::BODY;
@@ -173,12 +175,6 @@ void HttpParser::parseHeader() { //TODO: Check if maybe we just make the parse r
 		// call self again, should be fine.. it either removes stuff, marks as invalid, or finds CRLF at index 0 and then leaves
 		this->parseHeader();
 	}
-	else {
-		// TODO: I don't really remember off the top of my head if this *can* happen or if it's like an edge case
-		// Just gotta look into what to do if so, probably invalid but might also just be no body or something? 90% invalid tho
-		// At the very least we get rid of the print lol it's here temporarily!
-		std::cout << "just no CRLF found\n";
-	}
 }
 
 void HttpParser::setBodyType() {
@@ -186,8 +182,8 @@ void HttpParser::setBodyType() {
 	auto clIter = this->result.Headers.find("content-length");
 	// Invalid if both Content-Length and Transfer-Encoding are present
 	if (teIter != this->result.Headers.end() && clIter != this->result.Headers.end()) {
-			this->resultState = HttpParserResultState::INVALID;
-			return;
+		this->resultState = HttpParserResultState::INVALID;
+		return;
 	}
 	// Handle Transfer-Encoding
 	if (teIter != this->result.Headers.end()) {
@@ -244,16 +240,20 @@ void HttpParser::parseChunkedBody() {
 		return;
 	}
 	if (tryChunkSize.value() == 0) {
-		if (this->buffer.length() == index + 4 && this->buffer.ends_with("\r\n\r\n"))
+		// More lenient with length now, longer just means we ignore what is in it
+		// Since that makes it so the CRLFs don't necessarily have to be at end, we
+		// compare the find index to our index instead of ends_with
+		if (this->buffer.length() >= index + 4 && this->buffer.find("\r\n\r\n") == index)
 			this->resultState = HttpParserResultState::VALID;
-		else this->resultState = HttpParserResultState::INVALID;
+		else {
+			// Not necessarily invalid here yet, we can wait for more!
+			if (this->buffer.length() < index + 4) return;
+			this->resultState = HttpParserResultState::INVALID;
+		}
 		return;
 	}
-	// If smaller than the strlen of chunkSize + the actual size of the chunk + 4 for 2 CRLF's, invalid
-	if (this->buffer.length() < index + 4 + tryChunkSize.value()) {
-		this->resultState = HttpParserResultState::INVALID;
-		return;
-	}
+	// If smaller than the strlen of chunkSize + the actual size of the chunk + 4 for 2 CRLF's
+	if (this->buffer.length() < index + 4 + tryChunkSize.value()) return;
 	size_t chunkEnd = index + 2 + tryChunkSize.value();
 	// Invalid if chunk does not end with CRLF
 	if (this->buffer[chunkEnd] != '\r' || this->buffer[chunkEnd + 1] != '\n') {

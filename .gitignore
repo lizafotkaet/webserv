@@ -69,6 +69,7 @@ Testing/
 
 minitests/
 webserv
+examples/reqs
 
 # Keep .http files byte-for-byte so we don't corrupt them
 *.http -text
