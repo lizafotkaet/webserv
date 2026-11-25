@@ -128,7 +128,8 @@ void HttpParser::parseHeader() { //TODO: Check if maybe we just make the parse r
 		}
 		// Find the colon in header to know where to split
 		std::size_t colonPos = this->buffer.find_first_of(":");
-		if (colonPos == std::string::npos) {
+		// If no colon found or it's the first character (empty header name), invalid
+		if (colonPos == std::string::npos || colonPos == 0) {
 			this->resultState = HttpParserResultState::INVALID;
 			return;
 		}
@@ -213,7 +214,7 @@ void HttpParser::setBodyType() {
 
 void HttpParser::parseChunkedBody() {
 	size_t index = 0;
-	while (WSNumbers::IsDigit(this->buffer[index]))
+	while (WSNumbers::IsHexDigit(this->buffer[index]))
 		index++;
 	// Valid chunk size found but the buffer is too small to hold the CRLF to end chunk size line
 	// TODO: Probably have a "max chunk size" thing at some point and enforce it here?
@@ -231,7 +232,7 @@ void HttpParser::parseChunkedBody() {
 		this->resultState = HttpParserResultState::INVALID;
 		return;
 	}
-	std::optional<std::size_t> tryChunkSize = WSConvert::TryParseNum<std::size_t>(this->buffer, 10, index);
+	std::optional<std::size_t> tryChunkSize = WSConvert::TryParseNum<std::size_t>(this->buffer, 16, index);
 	// If number parsing failed, request is also invalid. Think this can only happen on overflow
 	// TODO: Probably check against a "max body size" if we add this chunk to the existing body, idk
 	// NOTE: The above todo is awkwardly placed and should go further down just cba rn
